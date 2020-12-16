@@ -1,0 +1,3 @@
+﻿  Keynmouse.cpp
+C:\Users\User\source\repos\MineSweeper\MineSweeper\Keynmouse.cpp(41,23): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+  MineSweeper.vcxproj -> C:\Users\User\source\repos\MineSweeper\Debug\MineSweeper.exe
