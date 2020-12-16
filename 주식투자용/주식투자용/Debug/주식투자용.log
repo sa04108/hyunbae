@@ -1,3 +1,13 @@
 ﻿  분할매수.cpp
-C:\Users\User\source\repos\주식투자용\주식투자용\분할매수.cpp(53,15): warning C4244: '초기화 중': 'std::streamoff'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  주식투자용.vcxproj -> C:\Users\User\source\repos\주식투자용\Debug\주식투자용.exe
+C:\Users\User\Documents\GitHub\hyunbae\주식투자용\주식투자용\분할매수.cpp(56,15): warning C4244: '초기화 중': 'std::streamoff'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\User\Documents\GitHub\hyunbae\주식투자용\주식투자용\분할매수.cpp(158): message : 컴파일되는 함수 템플릿 인스턴스화 'void init<unsigned int>(std::ifstream &,double &,double &,unsigned int &,T &)'에 대한 참조를 확인하세요.
+          with
+          [
+              T=unsigned int
+          ]
+C:\Users\User\Documents\GitHub\hyunbae\주식투자용\주식투자용\분할매수.cpp(100,34): warning C4244: '=': 'double'에서 'T'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+          with
+          [
+              T=unsigned int
+          ]
+  주식투자용.vcxproj -> C:\Users\User\Documents\GitHub\hyunbae\주식투자용\Debug\주식투자용.exe
