@@ -5,6 +5,13 @@
 #include <conio.h>
 using namespace std;
 
+void showStreamState(ios& stream) {
+	cout << "eof()\t" << stream.eof() << endl;
+	cout << "fail()\t" << stream.fail() << endl;
+	cout << "bad()\t" << stream.bad() << endl;
+	cout << "good()\t" << stream.good() << endl;
+}
+
 string insertComma(double num, bool isDollar = false, bool isCurrency = false) {
 		string str = to_string(num);
 		int i = str.find('.');
@@ -51,49 +58,49 @@ void init(ifstream& fin, double& low, double& high, unsigned int& num, double& m
 	while (true)
 	{
 		try {
-		if (filesize - offset <= 0) {
-			throw "§불러온 파일이 빈 파일이므로 새로 입력합니다.\n\n";
-		};
-		d.clear();
-		for (int i = offset; i < filesize; i++)
-		{
-			fin.seekg(filesize - 1 - i, ios::beg);
-			c = fin.get();
-			if (size > 0 && c == (int)'\n') break;
-			if (c >= 48 && c <= 57)
-				size++;
-			else
-				offset++;
-		}
-		for (int i = 0; i < size; i++)
-		{
-			c = fin.get();
-			d.append(1, (char)c);
-		}
+			if (filesize - offset <= 0) {
+				throw "§불러온 파일이 빈 파일이므로 새로 입력합니다.\n\n";
+			};
+			d.clear();
+			for (int i = offset; i < filesize; i++)
+			{
+				fin.seekg(filesize - 1 - i, ios::beg);
+				c = fin.get();
+				if (size > 0 && c == (int)'\n') break;
+				if (c >= 48 && c <= 57)
+					size++;
+				else
+					offset++;
+			}
+			for (int i = 0; i < size; i++)
+			{
+				c = fin.get();
+				d.append(1, (char)c);
+			}
 
-		offset += size + 2;
-		size = 0;
+			offset += size + 2;
+			size = 0;
 
-		if (d.empty())
-			throw " ... 불러온 파일 내부가 정상 상태가 아닙니다. 데이터를 새로 입력합니다.\n\n";
-		switch (flag)
-		{
-		case 0:
-			money = stod(d);
-			break;
-		case 1:
-			num = stoi(d);
-			break;
-		case 2:
-			high = stod(d);
-			break;
-		case 3:
-			low = stod(d);
-			break;
-		}
-		flag++;
+			if (d.empty())
+				throw " ... 불러온 파일 내부가 정상 상태가 아닙니다. 데이터를 새로 입력합니다.\n\n";
+			switch (flag)
+			{
+			case 0:
+				money = stod(d);
+				break;
+			case 1:
+				num = stoi(d);
+				break;
+			case 2:
+				high = stod(d);
+				break;
+			case 3:
+				low = stod(d);
+				break;
+			}
+			flag++;
 
-		if (flag > 3) break;
+			if (flag > 3) break;
 		}
 		catch (const char* s) {
 			cout << s;
@@ -110,35 +117,43 @@ string loadFileRoute(ifstream& fin) {
 	{
 		route.append(1, (char)c);
 	}
+	fin.seekg(0); // 이후의 fin 에 영향을 주지 않도록 파일 포인터를 맨 앞으로 위치시킨다.
 
 	return route;
 }
 
-void setFileRoute(ofstream& fout, string file) {
-	string route;
+void setFileRoute(ofstream& fout, string routeFile) {
+	string dataFile;
 
-	fout.close();
-	fout.open(file);
+	if (fout)
+		fout.close();
 
-	cout << "§데이터를 저장할 파일의 경로를 재설정합니다.\n";
+	fout.open(routeFile);
+	if (!fout)
+	{
+		cout << " ... 경로 파일을 불러오지 못했습니다.\n";
+		return;
+	}
+
+	cout << "§데이터를 저장할 파일의 경로를 재설정합니다. 경로는 " << routeFile << " 에 저장됩니다.\n";
 	cout << "\t●경로를 다음의 예시와 같이 정확하게 입력하십시오. \\를 두 번씩 입력해야 합니다.\n";
 	cout << "\tc:\\\\Users\\\\User\\\\Desktop\\\\data.txt\n\n";
-	cin >> route;
+	cin >> dataFile;
 
 	fout.seekp(0, ios::beg);
-	for (int i = 0; i < route.length(); i++)
+	for (int i = 0; i < dataFile.length(); i++)
 	{
-		fout.put(route[i]);
+		fout.put(dataFile[i]);
 	}
 
 	fout.close(); // close 해야 파일에 값이 입력되어 저장된다.
-	fout.open(route, ios::app);
+	fout.open(dataFile, ios::app);
 	if (!fout)
-		cout << " ... 경로가 잘못됐거나" << route << " 의 경로에 새 파일을 만들지 못했거나 파일 입력이 불가능한 상태입니다.\n\n";
+		cout << " ... 경로가 잘못됐거나" << dataFile << " 의 경로에 새 파일을 만들지 못했거나 파일 입력이 불가능한 상태입니다.\n\n";
 	else
 	{
-		cout << "§" << route << " 의 경로로 재지정되었습니다.\n\t●해당 경로에 새 파일을 자동으로 생성합니다..\n\n";
-		cout << "§" << route << " 의 경로에서 파일을 불러왔습니다. 데이터가 이 곳에 저장됩니다.\n\n";
+		cout << "§" << dataFile << " 의 경로로 재지정되었습니다.\n\t●해당 경로에 새 파일을 자동으로 생성합니다..\n\n";
+		cout << "§" << dataFile << " 파일을 불러왔습니다. 데이터가 이 곳에 저장됩니다.\n\n";
 	}
 }
 
@@ -147,39 +162,66 @@ int main() {
 	unsigned int num;
 	bool isDollar = false;
 
-	string file = "c:\\Users\\User\\Desktop\\data.txt";
-	bool isFileNone = false;
-	ifstream fin(file);
-	string route;
+	string routeFile = "route.txt";
+	bool isIfileNone = false;
+	bool isOfileNone = false;
+
+	ifstream fin(routeFile);
+	ofstream fout;
 
 	if (!fin)
-		cout << " ... " << file << " 파일 로드 실패.\n\n";
+	{
+		isIfileNone = true;
+		fout.open(routeFile); // 빈 파일 자동 생성
+		if (fout)
+			fout.close();
+		cout << " ... " << routeFile << " 파일 로드 실패. 데이터 저장 불가.\n\t●새 파일을 생성하였습니다.\n\n";
+	}
 	else {
-		cout << "§" << file << " 파일로부터 데이터 파일의 경로를 탐색합니다.\n";
-		route = loadFileRoute(fin);
+		string dataFile = loadFileRoute(fin);
+		cout << "§" << routeFile << " 파일로부터 데이터 파일의 경로를 탐색합니다.\n";
+
+		fout.open(dataFile); // 빈 파일 자동 생성
+		if (fout)
+			fout.close();
+
 		fin.close();
-		fin.open(route);
+		fin.open(dataFile);
 
 		if (!fin) {
 			fin.close();
-			fin.open(file);
+			fin.open(routeFile);
 			if (!fin)
-				cout << " ... 경로 탐색 실패, " << file << " 파일 로드 실패.\n\n";
-			else
-				cout << " ... 경로 탐색 실패, " << file << " 파일로부터 데이터를 불러옵니다.\n\n";
+			{
+				isIfileNone = true;
+				cout << " ... 데이터 파일 탐색 실패, " << routeFile << " 파일 로드 실패.\n\n";
+			}
+			else {
+				cout << " ... 데이터 파일 탐색 실패, " << routeFile << " 파일로부터 데이터를 불러옵니다. 임시로 여기에 데이터를 저장합니다.\n";
+				fout.open(routeFile, ios::app);
+				if (!fout) {
+					isOfileNone = true;
+					cout << " ... 데이터 입력 불가\n\n";
+				}
+				else
+					cout << "§" << routeFile << " 파일에 데이터를 입력합니다.\n\n";
+			}
 		}
 		else
-			cout << "§경로 탐색에 성공하였습니다. " << route << " 파일로부터 데이터를 불러옵니다.\n\n";
+		{
+			cout << "§데이터 파일 탐색에 성공하였습니다. " << dataFile << " 파일로부터 데이터를 불러옵니다.\n";
+			fout.open(dataFile, ios::app);
+			if (!fout) {
+				isOfileNone = true;
+				cout << " ... 데이터 입력 불가\n\n";
+			}
+			else
+				cout << "§" << dataFile << " 파일에 데이터를 입력합니다.\n\n";
+		}
 	}
 
-	ofstream fout(route, ios::app);
-	route = loadFileRoute(fin);
-	if (!fout)
-		cout << " ... " << route << "경로가 잘못됐거나 파일이 없습니다. 경로가 맞는 경우 새로 파일을 생성하여 데이터를 입력합니다.\n\n";
-	else
-		cout << "§" << route << "파일에 데이터를 입력합니다.\n\n";
 
-	if (!isFileNone)
+	if (!isIfileNone)
 	{
 		init(fin, low, high, num, money);
 
@@ -197,7 +239,7 @@ int main() {
 
 	int ch = _getch();
 	if (ch == 'r') {
-		setFileRoute(fout, file);
+		setFileRoute(fout, routeFile);
 	}
 	else if (ch == 'c') {
 		isDollar = true;
@@ -231,7 +273,7 @@ int main() {
 			continue;
 		}
 
-		if (!isFileNone)
+		if (!isOfileNone)
 			fout << endl << low << endl << high << endl << num << endl << fixed << setprecision(3) << money << endl;
 		print(low, high, num, money, isDollar);
 
@@ -243,6 +285,8 @@ int main() {
 		}
 	}
 
-	fin.close();
-	fout.close();
+	if (!isIfileNone)
+		fin.close();
+	if (!isOfileNone)
+		fout.close();
 }
