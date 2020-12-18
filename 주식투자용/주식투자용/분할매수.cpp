@@ -46,7 +46,7 @@ void print(double low, double high, unsigned int num, double money, bool isDolla
 	cout << "*****************************************************" << endl << endl;
 }
 
-void init(ifstream& fin, double& low, double& high, unsigned int& num, double& money) {
+void init(ifstream& fin, string& currency, double& low, double& high, unsigned int& num, double& money) {
 	fin.seekg(0, ios::end);
 	int filesize = fin.tellg();
 	int size = 0;
@@ -67,7 +67,7 @@ void init(ifstream& fin, double& low, double& high, unsigned int& num, double& m
 				fin.seekg(filesize - 1 - i, ios::beg);
 				c = fin.get();
 				if (size > 0 && c == (int)'\n') break;
-				if (c >= 48 && c <= 57)
+				if ((c >= 48 && c <= 57) || c >= 97 && c <= 122)
 					size++;
 				else
 					offset++;
@@ -97,10 +97,12 @@ void init(ifstream& fin, double& low, double& high, unsigned int& num, double& m
 			case 3:
 				low = stod(d);
 				break;
+			case 4:
+				currency = d;
 			}
 			flag++;
 
-			if (flag > 3) break;
+			if (flag > 4) break;
 		}
 		catch (const char* s) {
 			cout << s;
@@ -158,6 +160,7 @@ void setFileRoute(ofstream& fout, string routeFile) {
 }
 
 int main() {
+	string currency;
 	double low, high, money;
 	unsigned int num;
 	bool isDollar = false;
@@ -223,14 +226,13 @@ int main() {
 
 	if (!isIfileNone)
 	{
-		init(fin, low, high, num, money);
+		init(fin, currency, low, high, num, money);
 
 		if (!(low < 0 || high < 0 || num < 0 || money < 0)) {
-
 			cout << "### 저장된 값 목록 ###\n";
 			cout << "저가 : " << insertComma(low) << "\t고가 : " << insertComma(high)
 				<< "\t분할 단계 수 : " << insertComma(num) << "\t총 매수 금액 : " << insertComma(money) << endl;
-			print(low, high, num, money);
+			print(low, high, num, money, (currency == "dollar" ? true : false));
 		}
 	}
 
@@ -274,7 +276,10 @@ int main() {
 		}
 
 		if (!isOfileNone)
-			fout << endl << low << endl << high << endl << num << endl << fixed << setprecision(3) << money << endl;
+		{
+			isDollar ? currency = "dollar" : currency = "won";
+			fout << endl << currency << endl << low << endl << high << endl << num << endl << fixed << setprecision(3) << money << endl;
+		}
 		print(low, high, num, money, isDollar);
 
 		cout << "§종료를 원하시면 esc를 누르십시오. 달러/원화모드 전환은 c키, 계속 하려면 나머지 키를 누르십시오.\n";
