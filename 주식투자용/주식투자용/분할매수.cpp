@@ -181,7 +181,7 @@ int main() {
 		string dataFile = loadFileRoute(fin);
 		cout << "§" << routeFile << " 파일로부터 데이터 파일의 경로를 탐색합니다.\n";
 
-		fout.open(dataFile); // 빈 파일 자동 생성
+		fout.open(dataFile, ios::app); // 빈 파일 자동 생성
 		if (fout)
 			fout.close();
 
