@@ -1,28 +1,24 @@
-#include "MineSweeper.h"
-#include "Keynmouse.h"
-
-int ScreenSize::w_stored = 11;
-int ScreenSize::h_stored = 10;
-int ScreenSize::width_plus1 = 11;
-int ScreenSize::height = 10;
+#pragma once
+#include "InputManager.h"
+#include "GridPanel.h"
+#include "AdjustingPanel.h"
 
 int main()
 {
-    MineSweeper* ms = new MineSweeper;
-    Keynmouse km;
+    GridPanel* grid = new GridPanel(Position(5, 2), 10, 10);
+    AdjustingPanel* adjusting = new AdjustingPanel(Position(5, 15), 50, 3, grid);
+    InputManager im;
+    Scene scene = Scene::getInstance();
+
+    scene.add(grid);
+    scene.add(adjusting);
 
     while (1)
     {
-        km.rcInput();
-        if (!ms->gameOver)
-            ms->check();
-        if (Keynmouse::keyinput == 'R')
-        {
-            delete ms;
-            ms = new MineSweeper;
-        }
-        ms->setScreen();
+        im.readInputs();
+        scene.play();
     }
 
-    km.scMode();
+    delete grid;
+    delete adjusting;
 }

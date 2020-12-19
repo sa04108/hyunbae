@@ -138,17 +138,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Keynmouse.cpp" />
+    <ClCompile Include="AdjustingPanel.cpp" />
+    <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Mine.cpp" />
-    <ClCompile Include="MineSweeper.cpp" />
+    <ClCompile Include="GridPanel.cpp" />
+    <ClCompile Include="PanelScript.cpp" />
+    <ClCompile Include="Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GetPosition.h" />
-    <ClInclude Include="Keynmouse.h" />
-    <ClInclude Include="Mine.h" />
-    <ClInclude Include="MineSweeper.h" />
-    <ClInclude Include="ScreenSize.h" />
+    <ClInclude Include="AdjustingPanel.h" />
+    <ClInclude Include="GameObject.h" />
+    <ClInclude Include="PanelScript.h" />
+    <ClInclude Include="InputManager.h" />
+    <ClInclude Include="GridPanel.h" />
+    <ClInclude Include="Position.h" />
+    <ClInclude Include="Scene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
