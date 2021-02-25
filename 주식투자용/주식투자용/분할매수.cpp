@@ -67,7 +67,7 @@ void init(ifstream& fin, string& currency, double& low, double& high, unsigned i
 				fin.seekg(filesize - 1 - i, ios::beg);
 				c = fin.get();
 				if (size > 0 && c == (int)'\n') break;
-				if ((c >= 48 && c <= 57) || c >= 97 && c <= 122)
+				if ((c >= 48 && c <= 57) || c >= 97 && c <= 122 || c == '.')
 					size++;
 				else
 					offset++;
@@ -227,12 +227,13 @@ int main() {
 	if (!isIfileNone)
 	{
 		init(fin, currency, low, high, num, money);
+		bool isDollar_ = (currency == "dollar" ? true : false);
 
 		if (!(low < 0 || high < 0 || num < 0 || money < 0)) {
 			cout << "### 저장된 값 목록 ###\n";
-			cout << "저가 : " << insertComma(low) << "\t고가 : " << insertComma(high)
-				<< "\t분할 단계 수 : " << insertComma(num) << "\t총 매수 금액 : " << insertComma(money) << endl;
-			print(low, high, num, money, (currency == "dollar" ? true : false));
+			cout << "저가 : " << insertComma(low, isDollar_, true) << "\t고가 : " << insertComma(high, isDollar_, true)
+				<< "\t분할 단계 수 : " << insertComma(num) << "\t총 매수 금액 : " << insertComma(money, isDollar_, true) << endl;
+			print(low, high, num, money, isDollar_);
 		}
 	}
 
