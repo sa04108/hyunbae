@@ -9,7 +9,7 @@ class InputManager {
     HANDLE hStdin;
     DWORD fdwSaveOldMode, cNumRead, fdwMode;
     INPUT_RECORD irInBuf[128];
-    Scene scene;
+    Scene& scene;
 
 public:
     static int mouseinput;

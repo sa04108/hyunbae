@@ -15,7 +15,7 @@
 using namespace std;
 
 class GridPanel : public GameObject {
-	Scene scene;
+	Scene& scene;
 	PanelScript panel;
 	char* buffer; // char와 다르게 2바이트를 저장할 수 있으며, 유니코드 문자 저장 가능
 	char* hide_buffer;

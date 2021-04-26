@@ -1,89 +1,45 @@
 #include <iostream>
-#include <vector>
 using namespace std;
 
-class Circle {
-	int radius;
+template <class T>
+class MyStack {
+	int tos;
+	T data[100];
 public:
-	Circle(int radius = 1) { this->radius = radius; }
-	int getRadius() { return radius; }
+	MyStack();
+	void push(T element);
+	T pop();
 };
 
 template <class T>
-void myswap(T& a, T& b) {
-	T tmp;
-	tmp = a;
-	a = b;
-	b = tmp;
+MyStack<T>::MyStack() {
+	tos = -1;
+	memset(data, 0, 100);
 }
 
-template <typename A, typename B>
-void myswap(A& a, B& b) {
-	A tmp;
-	tmp = a;
-	a = b;
-	b = tmp;
-}
-
-class B {
-	char ch;
-public:
-	B(char ch) : ch(ch) {}
-	char getChar() { return ch; }
-};
-
-class A {
-protected:
-	int num;
-public:
-	A(int num = 0) : num(num) {}
-
-	friend class B;
-	vector<B*> vec;
-	int setNum(int num) { this->num = num; }
-	int getNum() { return num; }
-
-	template <typename T>
-	void add();
-
-	void print() {
-		for (auto b : vec) {
-			cout << b->getChar() << endl;
-		}
-	}
-};
-
-template <typename T>
-void A::add() {
-	auto t = new T(this);
-	if (dynamic_cast<B*>(t) == nullptr) {
-		delete t;
+template <class T>
+void MyStack<T>::push(T element) {
+	if (tos >= 99) {
+		cout << "Can't push data on stack.\n";
 		return;
 	}
-	vec.push_back(t);
+	data[++tos] = element;
+}
+
+template <class T>
+T MyStack<T>::pop() {
+	if (tos <= -1) {
+		cout << "The stack is empty.";
+		return 0;
+	}
+	return data[tos--];
 }
 
 int main() {
-	int a = 4, b = 5;
-	myswap(a, b);
-	cout << "a= " << a << ", b= " << b << endl;
+	MyStack<int> s;
+	s.push(3);
+	s.push(5);
+	cout << s.pop() << endl << s.pop() << endl;
 
-	double c = 0.3, d = 12.5;
-	myswap(c, d);
-	cout << "c= " << c << ", d= " << d << endl;
-
-	Circle donut(5), pizza(20);
-	myswap(donut, pizza);
-	cout << "donut 반지름: " << donut.getRadius() << ", ";
-	cout << "pizza 반지름: " << pizza.getRadius() << endl;
-
-	myswap<int, double>(a, c);
-	cout << a << " " << c;
-
-
-	A* pa = new A(3);
-	B* pb = new B('k');
-
-	pa->add<B>();
-	pa->print();
+	return 0;
 }

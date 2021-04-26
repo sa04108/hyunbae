@@ -7,7 +7,7 @@
 class AdjustingPanel :
     public GameObject
 {
-    Scene scene;
+    Scene& scene;
     PanelScript panel;
     GridPanel* grid;
 public:

@@ -5,14 +5,14 @@ class A {
 	int num;
 public:
 	A(int num = 0) : num(num) {}
-	void update() { cout << "Update A, num =" << num << endl; }
+	void update() { cout << "Update A, num = " << num << endl; }
 };
 
 class B :public A {
 	int num;
 public:
 	B(int num = 0) : num(num) {}
-	virtual void update() { cout << "Update B, num =" << num << endl; }
+	virtual void update() { cout << "Update B, num = " << num << endl; }
 	virtual void child() { cout << "child can implement this\n"; }
 };
 
@@ -20,14 +20,14 @@ class C {
 	int num;
 public:
 	C(int num = 0) : num(num) {}
-	virtual void update() { cout << "Update C, num =" << num << endl; }
+	virtual void update() { cout << "Update C, num = " << num << endl; }
 };
 
 class D : public B, public C {
 	int num;
 public:
 	D(int num = 0) : num(num) {}
-	virtual void update() { cout << "Update D, num =" << num << endl; }
+	virtual void update() { cout << "Update D, num = " << num << endl; }
 };
 
 int main() {
@@ -40,7 +40,7 @@ int main() {
 
 	pa = &b; // 업캐스팅
 	pa->update(); // b 객체에는 A 클래스 정보가 포함되어있다. A 클래스의 update 함수가 virtual 이 아니므로
-	// A 클래스의 num 정보와 update 함수에만 접근할 수 있다.
+	// b 의 정보에 접근할 수 없다.
 	
 	pb = (B*)pa; // 다운캐스팅
 	pb->update(); // pb 는 B 클래스형이므로 B 클래스의 메소드에 접근할 수 있다.

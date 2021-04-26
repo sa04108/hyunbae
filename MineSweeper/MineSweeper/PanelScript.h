@@ -7,7 +7,7 @@ using namespace std;
 
 class PanelScript
 {
-	Scene scene;
+	Scene& scene;
 	Position lefttop;
 	Position rightbottom;
 public:
