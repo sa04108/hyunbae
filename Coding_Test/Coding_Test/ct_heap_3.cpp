@@ -6,7 +6,7 @@
 
 using namespace std;
 
-struct compare
+struct compare // Collable Struct, 함수처럼 사용 가능
 {
     bool operator()(vector<int>& former, vector<int>& later)
     {
