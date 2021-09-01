@@ -1,45 +1,71 @@
 #include <string>
 #include <vector>
+#include <algorithm>
 #include <iostream>
 
 using namespace std;
 
-int numOfPrimeNum = 0;
+vector<int> pNums;
 
 bool isPrimeNum(int num)
 {
-	for (int i = 2; i < num; i++)
+	for (int i = 2; i < sqrt(num); i++)
 	{
 		if (num % i == 0)
 			return false;
 	}
-	return true;
+	return num <= 1 ? false : true;
 }
 
-void searchString(string numbers, string temp = "")
+void search(string leftNum, string checkNum, int count)
 {
-	for (string::iterator it = numbers.begin(); it != numbers.end(); it++)
+	for (unsigned int i = 0; i < leftNum.length(); i++)
 	{
-		temp.push_back(*it);
-		searchString(numbers, temp);
+		string tmp1 = leftNum;
+		string tmp2 = checkNum;
+		tmp2.push_back(leftNum[i]);
 
-		if (temp.size() == numbers.size())
-			if (isPrimeNum(stoi(temp)))
-				numOfPrimeNum++;
+		if (count == 0) {
+			int n = stoi(tmp2);
 
-		temp.clear();
+			if (isPrimeNum(n))
+				pNums.push_back(n);
+		}
+		else
+		{
+			tmp1.erase(i, 1);
+			search(tmp1, tmp2, count - 1);
+		}
 	}
 }
 
 int solution(string numbers) {
-    int answer = 0;
+	for (unsigned int i = 0; i < numbers.length(); i++)
+	{
+		search(numbers, "", i);
+	}
 
+	sort(pNums.begin(), pNums.end());
 
-    return answer;
+	vector<int>::iterator prev = pNums.begin();
+	vector<int>::iterator it = prev + 1;
+
+	while (it != pNums.end())
+	{
+		if (*prev == *it)
+			it = pNums.erase(it);
+		else
+		{
+			prev++;
+			it++;
+		}
+	}
+
+	int answer = pNums.size();
+	return answer;
 }
 
 int main()
 {
-	string s = "1234";
-	searchString(s);
+	cout << solution("111111");
 }
