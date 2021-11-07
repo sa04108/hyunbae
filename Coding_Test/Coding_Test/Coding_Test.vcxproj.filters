@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ct_hash_3.cpp">
+    <ClCompile Include="alpha_beta_pruning.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
