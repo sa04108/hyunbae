@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="alpha_beta_pruning.cpp">
+    <ClCompile Include="ct_greedy_3.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
