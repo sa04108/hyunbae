@@ -1,32 +1,28 @@
-#include <iostream>
 #include <string>
-#include <algorithm>
-
+#include <vector>
+#include <iostream>
 using namespace std;
 
 string solution(string number, int k) {
-    string temp = number;
-    string answer;
-    int len = number.length();
-    int max;
-    int minIdx = -1;
-    int restNum = len - k;
+    string answer = "";
 
-    sort(temp.begin(), temp.end(), greater<char>());
+    int biggest = 0;
+    int idx = 0;
 
-    for (int i = 0; i < len && restNum > 0; i++)
+    for (int i = 0; i < number.length(); ++i)
     {
-        max = temp[i] - 48;
-        int index = number.find(max + 48, minIdx + 1);
-        if (index <= len - restNum)
+        if (biggest < number[i])
         {
-            answer.push_back(max + 48);
-            minIdx = index;
-            restNum--;
+            biggest = number[i];
+            idx = i;
         }
-        else
+
+        if (i == k)
         {
-            answer.append(number.substr(minIdx + 1, restNum));
+            i = idx;
+            ++k;
+            answer.push_back(biggest);
+            biggest = 0;
         }
     }
 
@@ -35,7 +31,7 @@ string solution(string number, int k) {
 
 int main(int argc, char* argv[])
 {
-    cout << solution("4224113", 3);
+    cout << solution("7654391", 3);
 
     return 0;
 }
