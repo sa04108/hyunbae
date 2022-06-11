@@ -15,7 +15,7 @@ from sklearn.cluster import KMeans
 from sklearn import datasets
 from scipy.cluster.hierarchy import linkage, dendrogram
 
-np.random.seed(5)
+np.random.seed(0)
 
 # 데이터 불러오기
 iris = datasets.load_iris()
@@ -35,7 +35,7 @@ ax.set_position([0, 0, 0.95, 1])
 kmeans.fit(x) # 위에서 선택한 kmeans 클러스터링 실행
 labels = kmeans.labels_
 
-ax.scatter(x[:, 3], x[:, 0], x[:, 2], c=labels.astype(float), edgecolor="k")
+ax.scatter(x[:, 3], x[:, 0], x[:, 2], c=labels.astype(int), edgecolor="k")
 
 ax.w_xaxis.set_ticklabels([])
 ax.w_yaxis.set_ticklabels([])
