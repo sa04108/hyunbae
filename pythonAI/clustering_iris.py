@@ -77,10 +77,11 @@ ax.dist = 12
 
 #dendrogram
 plt.figure(3, figsize=(8, 8))
+plt.title('Dendrogram of Clustered Data')
 dfx = pd.DataFrame(x)
-dfy = pd.DataFrame(Y)
+dfy = pd.DataFrame(kmeans.labels_)
 data = pd.concat([dfx, dfy], axis=1)
-mergings = linkage(data, method='single') #클러스터간 거리를 잴 때 서로 가장 가까이 있는 점의 거리를 기준으로 한다.
+mergings = linkage(data, method='average') #클러스터간 거리를 잴 때 서로 가장 가까이 있는 점의 거리를 기준으로 한다.
 dendrogram(mergings, labels=dfy.values,
            leaf_rotation=0,
            leaf_font_size=7)
