@@ -4,58 +4,54 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class InputHandler : MonoBehaviour {
+    // Singleton
+    private static InputHandler instance;
+
+    public static InputHandler GetInstance() {
+        if (instance == null)
+            instance = FindObjectOfType(typeof(InputHandler)) as InputHandler;
+
+        return instance;
+    }
+
     public Transform player;
     public Transform playerFuture;
-    private Vector3 startPos;
 
     private GridManager gridManager;
-    private List<Vector3> pathVec3;
     private GameObject endPoint;
 
-    private Command buttonU;
-    private Command buttonR;
-    private Command buttonN;
-
-    public static List<Command> oldCommands = new List<Command>();
-    public static bool shouldStartReplay;
+    public List<Command> oldCommands = new List<Command>();
 
     private Coroutine replayCoroutine;
+    private bool isMoving;
     private bool isReplaying;
 
-    Dictionary<KeyCode, Command> basicButtons;
+    private void Awake() {
+        instance = this;
+    }
 
     void Start() {
         playerFuture.position = player.position;
         gridManager = Camera.main.GetComponent<GridManager>();
         if (player == null) player = GameObject.Find("Player").transform;
-
-        startPos = player.position;
-
-        buttonU = new UndoCommand();
-        buttonR = new ReplayCommand();
-        buttonN = new DoNothing();
-
-        basicButtons = new Dictionary<KeyCode, Command>() {
-                        { KeyCode.U, buttonU },
-                        { KeyCode.R, buttonR },
-                        { KeyCode.N, buttonN }
-        };
     }
 
     void Update() {
         player.position = Vector3.MoveTowards(player.position, playerFuture.position, Time.deltaTime * 5f);
 
-        if (!isReplaying)
+        if (!isMoving && !isReplaying)
             HandleInput();
-
-        StartReplay();
     }
 
 
     public void HandleInput() {
-        foreach (var kv in basicButtons) {
-            if (Input.GetKeyDown(kv.Key))
-                kv.Value.Execute();
+        if (Input.GetKeyDown(KeyCode.U)) {
+            UndoCommand undoCommand = new UndoCommand(player.position);
+            undoCommand.Execute();
+        }
+        else if (Input.GetKeyDown(KeyCode.R)) {
+            ReplayCommand replayCommand = new ReplayCommand(player.position);
+            replayCommand.Execute();
         }
 
         if (Input.GetMouseButtonDown(0)) {
@@ -78,9 +74,9 @@ public class InputHandler : MonoBehaviour {
                     endPoint.tag = "Plane";
                     endPoint.transform.position = GridManager.pos2center(hit.point) + Vector3.down * 0.49f;
 
-                    startPos = player.position;
-                    pathVec3 = gridManager.GetPathVector3(hit.point);
-                    StartCoroutine(MoveCommands(SetMoveCommands(pathVec3)));
+                    var pathVec3 = gridManager.GetPathVector3(hit.point);
+                    MoveCommand moveCommand = new MoveCommand(pathVec3, player.position);
+                    moveCommand.Execute();
                 }
             }
         }
@@ -89,48 +85,44 @@ public class InputHandler : MonoBehaviour {
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit)) {
                 if (hit.transform.tag == "Plane") {
-                    CreateWallCommand createWallCommand = new CreateWallCommand(hit.point);
+                    CreateWallCommand createWallCommand = new CreateWallCommand(player.position, hit.point);
                     createWallCommand.Execute();
                 }
                 else if (hit.transform.tag == "Wall") {
-                    DestroyWallCommand destroyWallCommand = new DestroyWallCommand(hit.transform);
+                    DestroyWallCommand destroyWallCommand = new DestroyWallCommand(player.position, hit.transform);
                     destroyWallCommand.Execute();
                 }
             }
         }
     }
 
-    //Checks if we should start the replay
-    void StartReplay() {
-        if (shouldStartReplay && oldCommands.Count > 0) {
-            shouldStartReplay = false;
+    public void MoveByPath(List<Vector3> path) {
+        StartCoroutine(MoveCoroutine(path));
+    }
 
+    IEnumerator MoveCoroutine(List<Vector3> path) {
+        isMoving = true;
+
+        if (path == null) yield break;
+
+        foreach (var pos in path) {
+            GridManager.drawRect(GridManager.pos2Cell(player.position), Color.red, Time.deltaTime);
+
+            playerFuture.position = pos;
+            yield return new WaitForSeconds(0.2f);
+        }
+
+        isMoving = false;
+    }
+
+    //Checks if we should start the replay
+    public void StartReplay() {
+        if (oldCommands.Count > 0) {
             if (replayCoroutine != null) {
                 StopCoroutine(replayCoroutine);
             }
 
             replayCoroutine = StartCoroutine(ReplayCommands());
-        }
-    }
-
-    List<Command> SetMoveCommands(List<Vector3> paths) {
-        List<Command> commandList = new List<Command>();
-        commandList.Add(new MoveCommand(playerFuture, startPos, pathVec3[0]));
-
-        for (int i = 1; i < pathVec3.Count; i++) {
-            Command moveCommand = new MoveCommand(playerFuture, pathVec3[i - 1], pathVec3[i]);
-            commandList.Add(moveCommand);
-        }
-
-        return commandList;
-    }
-
-    IEnumerator MoveCommands(List<Command> commands) {
-        while (commands.Count > 0) {
-            commands[0].Execute();
-            commands.RemoveAt(0);
-
-            yield return new WaitForSeconds(0.2f);
         }
     }
 
@@ -140,12 +132,14 @@ public class InputHandler : MonoBehaviour {
 
         Time.timeScale = 2;
 
-        player.position = startPos;
+        player.position = oldCommands[0].currentPos;
 
         for (int i = 0; i < oldCommands.Count; i++) {
-            oldCommands[i].Move();
+            oldCommands[i].Execute();
 
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitWhile(() => isMoving);
+
+            yield return new WaitForSeconds(0.5f);
         }
 
         isReplaying = false;

@@ -1,15 +1,14 @@
 ﻿using System;
 using UnityEngine;
 
-internal class WallObserver : IObserver<WallActionType> {
-    private GameObject wallObject;
+internal class WallObserver : MonoBehaviour, IObserver<WallActionType> {
     private int wallHP;
 
     private WallActionType nextAction;
     private Action action;
 
-    public WallObserver(GameObject wallObject) {
-        this.wallObject = wallObject;
+    public void Subscribe() {
+        ObserverHandler.GetInstance().wallOberverTracker.Subscribe(this);
     }
 
     public void OnCompleted() { // 데이터를 받은 후 행동
@@ -27,13 +26,31 @@ internal class WallObserver : IObserver<WallActionType> {
             case WallActionType.Destroy:
                 action = Destroy;
                 break;
+            case WallActionType.ChangeColor:
+                action = ChangeColor;
+                break;
             default:
                 break;
         }
     }
 
     private void Destroy() {
-        Debug.Log("Destroy");
-        GameObject.Destroy(wallObject);
+        Destroy(gameObject);
+    }
+
+    private void ChangeColor() {
+        GetComponent<MeshRenderer>().material.color = Color.black;
+    }
+
+    public void UnSubscribe() {
+        Destroy(gameObject);
+        ObserverHandler.GetInstance().wallOberverTracker.Unsubscribe(this);
+    }
+
+    private void OnCollisionEnter(Collision collision) {
+        if (collision.gameObject.layer == 8) {
+            Destroy(collision.gameObject);
+            Destroy();
+        }
     }
 }

@@ -3,12 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum WallActionType {
-    Destroy
+    Destroy,
+    ChangeColor
 }
 
 //The parent class
 public abstract class Command {
-    public Command() { }
+    public readonly Vector3 currentPos;
+
+    public Command(Vector3 currentPos) {
+        this.currentPos = currentPos;
+    }
 
     public abstract void Execute();
 
@@ -16,7 +21,7 @@ public abstract class Command {
     public virtual void Undo() { }
 
     protected void push() {
-        InputHandler.oldCommands.Add(this);
+        InputHandler.GetInstance().oldCommands.Add(this);
     }
 
 }
@@ -27,8 +32,11 @@ public abstract class Command {
 //
 
 public class CreateWallCommand : Command {
+    WallObserver wallOberver;
     Vector3 hitPos;
-    public CreateWallCommand(Vector3 mouseHit) {
+    Vector3 wallPos;
+
+    public CreateWallCommand(Vector3 currentPos, Vector3 mouseHit) : base(currentPos) {
         hitPos = mouseHit;
     }
 
@@ -36,40 +44,70 @@ public class CreateWallCommand : Command {
         var wall = GameObject.CreatePrimitive(PrimitiveType.Cube);
         wall.GetComponent<MeshRenderer>().material.color = Color.yellow;
         wall.tag = "Wall";
-        wall.transform.position = GridManager.pos2center(hitPos);
+        wallPos = GridManager.pos2center(hitPos);
+        wall.transform.position = wallPos;
+
+        wallOberver = wall.AddComponent<WallObserver>();
+        wallOberver.Subscribe();
 
         GridManager.SetAsWall(wall.transform.position);
 
-        WallObserver wallOberver = new WallObserver(wall);
-        ObserverHandler.disposableObervers.Add(ObserverHandler.wallOberverTracker.Subscribe(wallOberver));
         push();
+    }
+
+    public override void Undo() {
+        if (wallOberver != null) {
+            GridManager.SetAsNotWall(wallOberver.transform.position);
+
+            wallOberver.UnSubscribe();
+        }
+        else if (wallPos != null) {
+            GridManager.SetAsNotWall(wallPos);
+
+            foreach (var wallObject in GameObject.FindGameObjectsWithTag("Wall")) {
+                if (wallObject.transform.position == wallPos)
+                    wallObject.GetComponent<WallObserver>().UnSubscribe();
+            }
+        }
     }
 }
 
 public class DestroyWallCommand : Command {
     Transform subject;
-    public DestroyWallCommand(Transform hitObject) {
+    Vector3 hitPos;
+    public DestroyWallCommand(Vector3 currentPos, Transform hitObject) : base(currentPos) {
         subject = hitObject;
+        hitPos = subject.position;
     }
 
     public override void Execute() {
         GridManager.SetAsNotWall(subject.position);
 
-        ObserverHandler.wallOberverTracker.Update(WallActionType.Destroy);
-        ObserverHandler.wallOberverTracker.Notify();
+        subject.GetComponent<WallObserver>().UnSubscribe();
+
         push();
+    }
+
+    public override void Undo() {
+        if (hitPos != null) { // subject의 Transform은 얕게 복사되어서 원본이 사라지면 같이 사라짐
+            var wall = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            wall.GetComponent<MeshRenderer>().material.color = Color.yellow;
+            wall.tag = "Wall";
+            wall.transform.position = GridManager.pos2center(hitPos);
+
+            WallObserver wallOberver = wall.AddComponent<WallObserver>();
+            wallOberver.Subscribe();
+
+            GridManager.SetAsWall(wall.transform.position);
+        }
     }
 }
 
 public class MoveCommand : Command {
-    Transform subject;
-    Vector3 prevPos;
-    Vector3 nextPos;
+    List<Vector3> path;
 
-    public MoveCommand(Transform subject, Vector3 prevPos, Vector3 nextPos) {
-        this.subject = subject;
-        this.prevPos = prevPos;
-        this.nextPos = nextPos;
+    public MoveCommand(List<Vector3> path, Vector3 currentPos) : base(currentPos) {
+        this.path = path;
     }
 
     public override void Execute() {
@@ -78,21 +116,23 @@ public class MoveCommand : Command {
     }
 
     public override void Move() {
-        subject.position = nextPos;
-        GridManager.drawRect(GridManager.pos2Cell(subject.position), Color.red, Time.deltaTime);
+        InputHandler.GetInstance().MoveByPath(path);
     }
 
     public override void Undo() {
-        subject.position = prevPos;
-        GridManager.drawRect(GridManager.pos2Cell(subject.position), Color.red, Time.deltaTime);
+        List<Vector3> reversed = path.ConvertAll(v => new Vector3(v.x, v.y, v.z));
+        reversed.Reverse();
+        reversed.RemoveAt(0);
+        reversed.Add(currentPos);
+        InputHandler.GetInstance().MoveByPath(path);
     }
 }
 
 public class UndoCommand : Command {
-    public UndoCommand() { }
+    public UndoCommand(Vector3 currentPos) : base(currentPos) { }
 
     public override void Execute() {
-        List<Command> oldCommands = InputHandler.oldCommands;
+        List<Command> oldCommands = InputHandler.GetInstance().oldCommands;
 
         if (oldCommands.Count == 0) return;
 
@@ -107,15 +147,15 @@ public class UndoCommand : Command {
 }
 
 public class ReplayCommand : Command {
-    public ReplayCommand() { }
+    public ReplayCommand(Vector3 currentPos) : base(currentPos) { }
 
     public override void Execute() {
-        InputHandler.shouldStartReplay = true;
+        InputHandler.GetInstance().StartReplay();
     }
 }
 
 public class DoNothing : Command {
-    public DoNothing() { }
+    public DoNothing(Vector3 currentPos) : base(currentPos) { }
 
     public override void Execute() {
         push();
