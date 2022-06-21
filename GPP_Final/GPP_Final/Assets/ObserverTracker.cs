@@ -22,13 +22,23 @@ public class ObserverTracker<T> : IObservable<T>
 
     public void Update(T data) {
         foreach (var observer in observers) {
-            observer.OnNext(data);
+            try {
+                observer.OnNext(data);
+            }
+            catch (Exception e) {
+                observer.OnError(e);
+            }
         }
     }
 
     public void Notify() {
         foreach (var observer in observers) {
-            observer.OnCompleted();
+            try {
+                observer.OnCompleted();
+            }
+            catch (Exception e) {
+                observer.OnError(e);
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -22,9 +23,9 @@ public class InputHandler : MonoBehaviour {
 
     public List<Command> oldCommands = new List<Command>();
 
-    private Coroutine replayCoroutine;
-    private bool isMoving;
+    public bool isMoving;
     private bool isReplaying;
+    [SerializeField] Text replayingText;
 
     private void Awake() {
         instance = this;
@@ -118,30 +119,27 @@ public class InputHandler : MonoBehaviour {
     //Checks if we should start the replay
     public void StartReplay() {
         if (oldCommands.Count > 0) {
-            if (replayCoroutine != null) {
-                StopCoroutine(replayCoroutine);
-            }
-
-            replayCoroutine = StartCoroutine(ReplayCommands());
+            StartCoroutine(ReplayCommands());
         }
     }
 
     //The replay coroutine
     IEnumerator ReplayCommands() {
         isReplaying = true;
+        replayingText.gameObject.SetActive(true);
 
         Time.timeScale = 2;
 
         player.position = oldCommands[0].currentPos;
 
         for (int i = 0; i < oldCommands.Count; i++) {
-            oldCommands[i].Execute();
-
+            oldCommands[i].Move();
             yield return new WaitWhile(() => isMoving);
 
             yield return new WaitForSeconds(0.5f);
         }
 
+        replayingText.gameObject.SetActive(false);
         isReplaying = false;
         Time.timeScale = 1;
     }

@@ -2,11 +2,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum WallActionType {
-    Destroy,
-    ChangeColor
-}
-
 //The parent class
 public abstract class Command {
     public readonly Vector3 currentPos;
@@ -41,6 +36,11 @@ public class CreateWallCommand : Command {
     }
 
     public override void Execute() {
+        Move();
+        push();
+    }
+
+    public override void Move() {
         var wall = GameObject.CreatePrimitive(PrimitiveType.Cube);
         wall.GetComponent<MeshRenderer>().material.color = Color.yellow;
         wall.tag = "Wall";
@@ -51,8 +51,6 @@ public class CreateWallCommand : Command {
         wallOberver.Subscribe();
 
         GridManager.SetAsWall(wall.transform.position);
-
-        push();
     }
 
     public override void Undo() {
@@ -81,11 +79,16 @@ public class DestroyWallCommand : Command {
     }
 
     public override void Execute() {
-        GridManager.SetAsNotWall(subject.position);
-
-        subject.GetComponent<WallObserver>().UnSubscribe();
-
+        Move();
         push();
+    }
+
+    public override void Move() {
+        if (subject != null) {
+            GridManager.SetAsNotWall(subject.position);
+
+            subject.GetComponent<WallObserver>().UnSubscribe();
+        }
     }
 
     public override void Undo() {
@@ -124,7 +127,7 @@ public class MoveCommand : Command {
         reversed.Reverse();
         reversed.RemoveAt(0);
         reversed.Add(currentPos);
-        InputHandler.GetInstance().MoveByPath(path);
+        InputHandler.GetInstance().MoveByPath(reversed);
     }
 }
 

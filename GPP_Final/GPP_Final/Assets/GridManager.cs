@@ -51,10 +51,10 @@ public class GridManager : MonoBehaviour {
         n_z = n_cols;
 
         // set up the player's position to the center of the grid.
-        player.position = locateToCenter(new Vector3(n_x / 2, 0, n_z / 2)); // place the player to the center.
-        plane.position = player.position + Vector3.down * 0.5f;
+        player.position = locateToCenter(new Vector3(n_x / 2, 0.5f, n_z / 2)); // place the player to the center.
+        plane.position = player.position + Vector3.down;
         plane.localScale = new Vector3(n_x * 0.1f, plane.localScale.y, n_z * 0.1f);
-        enemy.transform.position = player.position + plane.localScale;
+        enemy.transform.position = player.position + plane.localScale * 2f;
         int player_cell = pos2Cell(player.transform.position);
 
         // construct a game world and assign walls.
@@ -354,6 +354,7 @@ public class GridManager : MonoBehaviour {
             int to = remaining[0]; remaining.RemoveAt(0);
 
             Vector3 toLoc = locateToCenter(cell2Pos(to));
+            toLoc.y = 0.5f;
             pathVec3.Add(toLoc);
         }
 
