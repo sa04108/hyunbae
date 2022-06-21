@@ -23,9 +23,13 @@ public class InputHandler : MonoBehaviour {
 
     public List<Command> oldCommands = new List<Command>();
 
-    public bool isMoving;
+    private bool isMoving;
+    private bool isWallReady;
     private bool isReplaying;
+    [SerializeField] Text wallReadyText;
     [SerializeField] Text replayingText;
+
+    private float wallTime;
 
     private void Awake() {
         instance = this;
@@ -42,6 +46,13 @@ public class InputHandler : MonoBehaviour {
 
         if (!isMoving && !isReplaying)
             HandleInput();
+
+        wallTime += Time.deltaTime;
+        if (wallTime > 2f) {
+            isWallReady = true;
+            wallReadyText.gameObject.SetActive(true);
+            wallTime = 0;
+        }
     }
 
 
@@ -86,8 +97,12 @@ public class InputHandler : MonoBehaviour {
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit)) {
                 if (hit.transform.tag == "Plane") {
-                    CreateWallCommand createWallCommand = new CreateWallCommand(player.position, hit.point);
-                    createWallCommand.Execute();
+                    if (isWallReady) {
+                        isWallReady = false;
+                        wallReadyText.gameObject.SetActive(false);
+                        CreateWallCommand createWallCommand = new CreateWallCommand(player.position, hit.point);
+                        createWallCommand.Execute();
+                    }
                 }
                 else if (hit.transform.tag == "Wall") {
                     DestroyWallCommand destroyWallCommand = new DestroyWallCommand(player.position, hit.transform);

@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour {
     public Transform player;
-    float time;
+    float shootTime;
+    float roarTime;
 
     private void Start() {
         if (player == null)
@@ -16,10 +17,17 @@ public class Enemy : MonoBehaviour {
         transform.position = Vector3.MoveTowards(transform.position, player.position, Time.deltaTime);
         transform.LookAt(player);
 
-        time += Time.deltaTime;
-        if (time > 3f) {
+        shootTime += Time.deltaTime;
+        roarTime += Time.deltaTime;
+
+        if (shootTime > 3f) {
             Shoot();
-            time = 0;
+            shootTime = 0;
+        }
+
+        if (roarTime > 8f) {
+            Roar();
+            roarTime = 0;
         }
     }
 
@@ -28,10 +36,16 @@ public class Enemy : MonoBehaviour {
         bullet.transform.localScale /= 2;
         bullet.transform.position = transform.position;
         bullet.GetComponent<MeshRenderer>().material.color = Color.black;
-        bullet.layer = 8;
+        bullet.layer = LayerMask.NameToLayer("Bullet");
         var rigid = bullet.AddComponent<Rigidbody>();
         rigid.useGravity = false;
         rigid.AddForce(transform.forward, ForceMode.Force);
         rigid.velocity = transform.forward * 5;
+        Destroy(bullet, 5f);
+    }
+
+    void Roar() {
+        ObserverHandler.GetInstance().wallOberverTracker.Update(WallActionType.Corrosion);
+        ObserverHandler.GetInstance().wallOberverTracker.Notify();
     }
 }

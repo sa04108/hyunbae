@@ -2,14 +2,17 @@
 using UnityEngine;
 
 public enum WallActionType {
-    ChangeColor
+    Corrosion,
+    Destroy
 }
 
 internal class WallObserver : MonoBehaviour, IObserver<WallActionType> {
-    private int wallHP;
-
-    private WallActionType nextAction;
     private Action action;
+    private int wallHp;
+
+    void Start() {
+        wallHp = 2;
+    }
 
     public void Subscribe() {
         ObserverHandler.GetInstance().wallOberverTracker.Subscribe(this);
@@ -24,25 +27,33 @@ internal class WallObserver : MonoBehaviour, IObserver<WallActionType> {
     }
 
     public void OnNext(WallActionType value) { // 행동 데이터 받기
-        nextAction = value;
-
         switch (value) {
-            case WallActionType.ChangeColor:
-                action = ChangeColor;
+            case WallActionType.Corrosion:
+                action = Corrosion;
+                break;
+            case WallActionType.Destroy:
+                action = UnSubscribe;
                 break;
             default:
                 break;
         }
     }
 
-    private void ChangeColor() {
+    private void Corrosion() {
+        wallHp--;
         GetComponent<MeshRenderer>().material.color = Color.black;
+
     }
 
     private void OnCollisionEnter(Collision collision) {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Bullet")) {
-            Destroy(collision.gameObject);
-            UnSubscribe();
+            wallHp--;
+            GetComponent<MeshRenderer>().material.color = Color.black;
+
+            if (wallHp <= 0) {
+                Destroy(collision.gameObject);
+                UnSubscribe();
+            }
         }
     }
 
