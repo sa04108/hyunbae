@@ -71,11 +71,11 @@ public class CreateWallCommand : Command {
 }
 
 public class DestroyWallCommand : Command {
-    Transform subject;
+    Transform wallTransform;
     Vector3 hitPos;
     public DestroyWallCommand(Vector3 currentPos, Transform hitObject) : base(currentPos) {
-        subject = hitObject;
-        hitPos = subject.position;
+        wallTransform = hitObject;
+        hitPos = wallTransform.position;
     }
 
     public override void Execute() {
@@ -84,10 +84,18 @@ public class DestroyWallCommand : Command {
     }
 
     public override void Move() {
-        if (subject != null) {
-            GridManager.SetAsNotWall(subject.position);
+        if (wallTransform != null) {
+            GridManager.SetAsNotWall(wallTransform.position);
 
-            subject.GetComponent<WallObserver>().UnSubscribe();
+            wallTransform.GetComponent<WallObserver>().UnSubscribe();
+        }
+        else if (hitPos != null) {
+            GridManager.SetAsNotWall(hitPos);
+
+            foreach (var wallObject in GameObject.FindGameObjectsWithTag("Wall")) {
+                if (wallObject.transform.position == hitPos)
+                    wallObject.GetComponent<WallObserver>().UnSubscribe();
+            }
         }
     }
 
@@ -144,8 +152,6 @@ public class UndoCommand : Command {
         latestCommand.Undo();
 
         oldCommands.RemoveAt(oldCommands.Count - 1);
-
-        //InputHandler.moveIndex--;
     }
 }
 
