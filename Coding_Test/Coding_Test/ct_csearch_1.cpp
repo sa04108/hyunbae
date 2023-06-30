@@ -11,10 +11,10 @@ vector<int> solution(vector<int> answers) {
 
     for (int i = 0; i < answers.size(); i++)
     {
-        // ¼öÆ÷ÀÚ 1ÀÇ ´ä
+        // ìˆ˜í¬ì 1ì˜ ë‹µ
         a1 = i % 5 + 1;
 
-        // ¼öÆ÷ÀÚ 2ÀÇ ´ä
+        // ìˆ˜í¬ì 2ì˜ ë‹µ
         if (i % 2 == 0)
             a2 = 2;
         else
@@ -27,7 +27,7 @@ vector<int> solution(vector<int> answers) {
                 a2 = i % 8 - 2;
         }
 
-        // ¼öÆ÷ÀÚ 3ÀÇ ´ä
+        // ìˆ˜í¬ì 3ì˜ ë‹µ
         switch (i % 10)
         {
         case 0:
