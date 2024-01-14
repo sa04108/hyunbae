@@ -9,7 +9,7 @@ using namespace std;
 // 분할 매수 프로그램
 // 소스 파일이 있는 폴더에 있는 route.txt 파일을 수정하여 경로를 바꿔야 합니다.
 // 기본 형태) c:\\Users\\User\\Desktop\\data.txt
-// 백슬래시(\)를 두 번씩 입력하십시오.
+// 반드시 경로 구분자 백슬래시(\)를 두 번씩 입력해야합니다.
 void ShowStreamState(ios& stream) {
 	cout << "eof()\t" << stream.eof() << endl;
 	cout << "fail()\t" << stream.fail() << endl;
