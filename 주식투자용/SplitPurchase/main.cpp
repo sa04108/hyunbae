@@ -5,14 +5,19 @@
 #include <conio.h>
 using namespace std;
 
-void showStreamState(ios& stream) {
+// *** 필독 ***
+// 분할 매수 프로그램
+// 소스 파일이 있는 폴더에 있는 route.txt 파일을 수정하여 경로를 바꿔야 합니다.
+// 기본 형태) c:\\Users\\User\\Desktop\\data.txt
+// 백슬래시(\)를 두 번씩 입력하십시오.
+void ShowStreamState(ios& stream) {
 	cout << "eof()\t" << stream.eof() << endl;
 	cout << "fail()\t" << stream.fail() << endl;
 	cout << "bad()\t" << stream.bad() << endl;
 	cout << "good()\t" << stream.good() << endl;
 }
 
-string insertComma(double num, bool isDollar = false, bool isCurrency = false) {
+string InsertComma(double num, bool isDollar = false, bool isCurrency = false) {
 		string str = to_string(num);
 		int i = str.find('.');
 		isDollar ? str.erase(i + 3) : str.erase(i); // 소수점 이후 정리
@@ -33,20 +38,20 @@ string insertComma(double num, bool isDollar = false, bool isCurrency = false) {
 		return str;
 }
 
-void print(double low, double high, unsigned int num, double money, bool isDollar = false) {
+void Print(double low, double high, unsigned int num, double money, bool isDollar = false) {
 	double div = (high - low) / ((double)num - 1);
 	double div_money = money / (double)num;
 
 	for (unsigned int i = 0; i < num; i++)
 	{
-		cout << "◆" << i + 1 << "차 매수 지점 >> " << insertComma(low + i * div, isDollar, true);
-		cout << "\t\t◆매수 금액 >> " << insertComma(div_money, isDollar, true);
+		cout << "◆" << i + 1 << "차 매수 지점 >> " << InsertComma(low + i * div, isDollar, true);
+		cout << "\t\t◆매수 금액 >> " << InsertComma(div_money, isDollar, true);
 		cout << "\t\t◆매수 수량 >> " << fixed << setprecision(2) << div_money / (low + i * div) << "개\n";
 	}
 	cout << "*****************************************************" << endl << endl;
 }
 
-void init(ifstream& fin, string& currency, double& low, double& high, unsigned int& num, double& money) {
+void Init(ifstream& fin, string& currency, double& low, double& high, unsigned int& num, double& money) {
 	fin.seekg(0, ios::end);
 	int filesize = fin.tellg();
 	int size = 0;
@@ -111,7 +116,7 @@ void init(ifstream& fin, string& currency, double& low, double& high, unsigned i
 	}
 }
 
-string loadFileRoute(ifstream& fin) {
+string LoadFileRoute(ifstream& fin) {
 	int c, i = 0;
 	string route;
 
@@ -124,7 +129,7 @@ string loadFileRoute(ifstream& fin) {
 	return route;
 }
 
-void setFileRoute(ofstream& fout, string routeFile) {
+void SetFileRoute(ofstream& fout, string routeFile) {
 	string dataFile;
 
 	if (fout)
@@ -181,7 +186,7 @@ int main() {
 		cout << " ... " << routeFile << " 파일 로드 실패. 데이터 저장 불가.\n\t●새 파일을 생성하였습니다.\n\n";
 	}
 	else {
-		string dataFile = loadFileRoute(fin);
+		string dataFile = LoadFileRoute(fin);
 		cout << "§" << routeFile << " 파일로부터 데이터 파일의 경로를 탐색합니다.\n";
 
 		fout.open(dataFile, ios::app); // 빈 파일 자동 생성
@@ -226,14 +231,14 @@ int main() {
 
 	if (!isIfileNone)
 	{
-		init(fin, currency, low, high, num, money);
+		Init(fin, currency, low, high, num, money);
 		bool isDollar_ = (currency == "dollar" ? true : false);
 
 		if (!(low < 0 || high < 0 || num < 0 || money < 0)) {
 			cout << "### 저장된 값 목록 ###\n";
-			cout << "저가 : " << insertComma(low, isDollar_, true) << "\t고가 : " << insertComma(high, isDollar_, true)
-				<< "\t분할 단계 수 : " << insertComma(num) << "\t총 매수 금액 : " << insertComma(money, isDollar_, true) << endl;
-			print(low, high, num, money, isDollar_);
+			cout << "저가 : " << InsertComma(low, isDollar_, true) << "\t고가 : " << InsertComma(high, isDollar_, true)
+				<< "\t분할 단계 수 : " << InsertComma(num) << "\t총 매수 금액 : " << InsertComma(money, isDollar_, true) << endl;
+			Print(low, high, num, money, isDollar_);
 		}
 	}
 
@@ -242,7 +247,7 @@ int main() {
 
 	int ch = _getch();
 	if (ch == 'r') {
-		setFileRoute(fout, routeFile);
+		SetFileRoute(fout, routeFile);
 	}
 	else if (ch == 'c') {
 		isDollar = true;
@@ -281,7 +286,7 @@ int main() {
 			isDollar ? currency = "dollar" : currency = "won";
 			fout << endl << currency << endl << low << endl << high << endl << num << endl << fixed << setprecision(3) << money << endl;
 		}
-		print(low, high, num, money, isDollar);
+		Print(low, high, num, money, isDollar);
 
 		cout << "§종료를 원하시면 esc를 누르십시오. 달러/원화모드 전환은 c키, 계속 하려면 나머지 키를 누르십시오.\n";
 		ch = _getch();
