@@ -100,7 +100,7 @@ public class DestroyWallCommand : Command {
     }
 
     public override void Undo() {
-        if (hitPos != null) { // subjectÀÇ TransformÀº ¾è°Ô º¹»çµÇ¾î¼­ ¿øº»ÀÌ »ç¶óÁö¸é °°ÀÌ »ç¶óÁü
+        if (hitPos != null) { // subjectì˜ Transformì€ ì–•ê²Œ ë³µì‚¬ë˜ì–´ì„œ ì›ë³¸ì´ ì‚¬ë¼ì§€ë©´ ê°™ì´ ì‚¬ë¼ì§
             var wall = GameObject.CreatePrimitive(PrimitiveType.Cube);
             wall.GetComponent<MeshRenderer>().material.color = Color.yellow;
             wall.tag = "Wall";
