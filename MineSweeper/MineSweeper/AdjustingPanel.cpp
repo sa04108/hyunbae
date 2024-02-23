@@ -10,7 +10,7 @@ void AdjustingPanel::draw() {
     Position::gotoxy(x, y);
     cout << "Press 'R' Button to reset the game.";
     Position::gotoxy(x, y + 1);
-    cout << "Press ¡è, ¡é, ¡ç, ¡æ, to adjust the game screen.";
+    cout << "Press â†, â†’, â†‘, â†“, to adjust the game screen.";
     Position::gotoxy(x, y + 2);
     cout << setw(2) << grid->getGridWidth() << " * " << setw(2) << grid->getGridHeight() << " (change will begin next game.)    ";
 }

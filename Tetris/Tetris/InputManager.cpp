@@ -115,7 +115,7 @@ void InputManager::readInputs()
 		if (irInBuf[i].EventType == KEY_EVENT)
 		{
 			if (irInBuf[i].Event.KeyEvent.bKeyDown)
-				events.push_back(irInBuf[i]); // ÀÓ½Ã·Î Å° ÀÔ·ÂÀ» ¹ŞÀ» ¶§¿¡¸¸, ´©¸¥ »óÅÂÀÏ¶§¸¸ ÀÔ·Â ¹öÆÛ¿¡ ÀúÀåÇÏµµ·ÏÇÔ.
+				events.push_back(irInBuf[i]); // ì„ì‹œë¡œ í‚¤ ì…ë ¥ì„ ë°›ì„ ë•Œì—ë§Œ, ëˆ„ë¥¸ ìƒíƒœì¼ë•Œë§Œ ì…ë ¥ ë²„í¼ì— ì €ì¥í•˜ë„ë¡í•¨.
 		}
 	}
 }
