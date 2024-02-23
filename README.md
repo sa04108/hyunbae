@@ -14,14 +14,19 @@
 - 개인적으로 C++ 강의를 보며 기록한 코드들입니다.
 ### 3. GPP_Final
 <img src="https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=c-sharp&logoColor=white" />
+<img src="readme-images/gppfinal.jpg" width="400" height="300"></img>
 
 - 대학교 전공 과목 '게임프로그래밍패턴'의 기말 프로젝트입니다. Unity 프로젝트이며 C#으로 작성되었습니다.
-- Command, Observer, Singleton 패턴을 조합하여 제작하였습니다.
+- DFS, BFS, A* 알고리즘으로 길 찾기를 수행합니다.
+- Command, Observer, Singleton 패턴을 조합하였습니다.
 ### 4. MineSweeper, Tetris
 <img src="https://img.shields.io/badge/C%2B%2B-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white" />
+<img src="readme-images/mine.jpg"></img>
+<img src="readme-images/tetris.jpg"></img>
 
 - 대학교 전공 과목의 프로젝트 중 하나로, 지뢰찾기와 테트리스를 C++로 구현하였습니다.
-- 지뢰찾기에서는 WinAPI를 사용하여 커서로 클릭한 지점을 프로그램에서 인식할 수 있도록 하였습니다.
+- WinAPI를 사용하여 커서와 키 입력을 받습니다.
+- 지뢰찾기에서는 방향키로 게임 필드를 늘릴 수 있으며 깃발 꽂기 기능도 있습니다.
 ### 5. Modern_Design_Pattern
 <img src="https://img.shields.io/badge/C%2B%2B-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white" />
 
