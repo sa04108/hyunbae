@@ -1,3 +1,5 @@
+// 배열에 대한 확장메서드 형태로 정렬하는 기능 제공
+// 대부분의 함수가 제네릭으로 구현되어 있으며 데이터 타입은 우선순위 비교를 위한 최소한의 조건인 IComparable 인터페이스 기반이어야 함.
 public static class Sort
 {
     public static void BubbleSort<T>(this T[] src) where T : IComparable<T>
@@ -111,6 +113,7 @@ public static class Sort
         }
     }
 
+    // 보편적으로 가장 빠른 정렬 알고리즘. swap 횟수가 가장 적고 추가 메모리를 사용하지 않기 때문.
     public static void QuickSort<T>(this T[] src) where T : IComparable<T>
     {
         Divide(0, src.Length - 1);
@@ -133,20 +136,24 @@ public static class Sort
 
             while (low <= high)
             {
+                // pivot과 대상 값이 같은 경우 루프를 빠져나올 수 없으므로 비교시 값이 같은 경우를 포함함. 단, out of range에 대한 예외처리는 따로 해주어야 함.
                 while (low < src.Length && pivot.CompareTo(src[low]) >= 0 && low <= right)
                     low++;
                 while (high > 0 && pivot.CompareTo(src[high]) <= 0 && high >= left + 1)
                     high--;
                 
+                // pivot 보다 작은 값은 왼쪽으로, 큰 값은 오른쪽으로
                 if (low <= high)
                     src.Swap(low, high);
             }
 
+            // pivot 값과 pivot보다 작으면서 가장 오른쪽에 있는 값과 교환
             src.Swap(left, high);
             return high;
         }
     }
 
+    // 다룰 수 있는 데이터 타입이 제한적이긴 하나 시간복잡도가 O(N)에 수렴하는 가장 빠른 알고리즘
     public static void RadixSort(this int[] src)
     {
         ListQueue<int>[] buckets = new ListQueue<int>[10];

@@ -1,3 +1,4 @@
+// 배열 기반 원형 큐
 public class CircularQueue<T>
 {
     public int front = 0;
@@ -69,6 +70,7 @@ public class CircularQueue<T>
     }
 }
 
+// 연결리스트 기반 큐
 public class ListQueue<T>
 {
     public Node<T> front = null;

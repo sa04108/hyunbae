@@ -1,5 +1,4 @@
-using System.ComponentModel.DataAnnotations;
-
+// 배열 기반의 힙(완전이진트리)
 public class Heap<T> where T : IComparable<T> // Min Heap
 {
     T[] heapArray;
