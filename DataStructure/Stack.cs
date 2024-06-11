@@ -1,6 +1,6 @@
 public class Stack<T>
 {
-    public int count { get; private set; }
+    public int count { get; protected set; }
     protected Node<T> peek;
 
     public T Peek()
@@ -61,14 +61,13 @@ public class LimitedStack<T> : Stack<T>
         {
             bottom = bottom.next;
             bottom.prev = null;
+            count--;
         }
 
         base.Push(data);
 
         if (bottom == null)
             bottom = peek;
-
-        Console.Write($"push count: {count} / ");
     }
 
     public override T Pop()
@@ -77,8 +76,6 @@ public class LimitedStack<T> : Stack<T>
         
         if (count == 0)
             bottom = null;
-
-        Console.Write($"pop count: {count} / ");
 
         return data;
     }

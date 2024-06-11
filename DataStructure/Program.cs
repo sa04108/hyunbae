@@ -25,7 +25,7 @@
         int[] nums = Enumerable.Range(1, 100).ToArray();
 
         int i = 0;
-        UndoRedoHistory<int> history = new UndoRedoHistory<int>(3);
+        UndoRedoHistory<int> history = new UndoRedoHistory<int>();
         while (true)
         {
             var key = Console.ReadKey(intercept: true); // 입력받은 키를 화면에 표시하지 않음
