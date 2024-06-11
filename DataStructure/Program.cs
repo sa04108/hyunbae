@@ -21,5 +21,30 @@
         int[] nums = { 13, 212, 14, 7141, 10987, 6, 15};
         nums.RadixSort();
         nums.Print();
+
+        int i = 0;
+        UndoRedoHistory<int> history = new UndoRedoHistory<int>();
+        while (true)
+        {
+            var key = Console.ReadKey(intercept: true); // 입력받은 키를 화면에 표시하지 않음
+            char keyChar = key.KeyChar;
+
+            if (keyChar == 'a')
+            {
+                Console.WriteLine($"{history.Undo()}");
+            }
+            else if (keyChar == 's')
+            {
+                if (i < nums.Length)
+                {
+                    history.AddState(nums[i]);
+                    Console.WriteLine($"{nums[i++]}");
+                }
+            }
+            else if (keyChar == 'd')
+            {
+                Console.WriteLine($"{history.Redo()}");
+            }
+        }
     }
 }
