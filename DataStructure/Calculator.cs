@@ -51,14 +51,14 @@ public class Calculator
             }
             else if (c == ')')
             {
-                while (stack.count > 0 && stack.peek.data != '(')
+                while (stack.count > 0 && stack.Peek() != '(')
                 {
                     inf += stack.Pop();
                 }
             }
             else if (c == '+' || c == '-' || c == '*' || c == '/')
             {
-                while (stack.count > 0 && WhoPrecOp(stack.peek.data, c) >= 0)
+                while (stack.count > 0 && WhoPrecOp(stack.Peek(), c) >= 0)
                 {
                     inf += stack.Pop();
                 }

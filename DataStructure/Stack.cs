@@ -1,20 +1,32 @@
 public class Stack<T>
 {
-    public int count = 0;
-    public Node<T> peek;
+    public int count { get; private set; }
+    protected Node<T> peek;
+
+    public T Peek()
+    {
+        if (count == 0)
+        {
+            Console.WriteLine("Stack is empty");
+            return default;
+        }
+
+        return peek.data;
+    }
 
     public virtual void Push(T data)
     {
         Node<T> node = new Node<T>(data);
         if (peek != null)
         {
+            peek.next = node;
             node.prev = peek;
         }
         peek = node;
         count++;
     }
 
-    public T Pop()
+    public virtual T Pop()
     {
         if (peek != null)
         {
@@ -35,7 +47,8 @@ public class Stack<T>
 
 public class LimitedStack<T> : Stack<T>
 {
-    public int limitCount;
+    int limitCount;
+    Node<T> bottom;
 
     public LimitedStack(int limitCount)
     {
@@ -46,10 +59,27 @@ public class LimitedStack<T> : Stack<T>
     {
         if (count >= limitCount)
         {
-            Console.WriteLine("Stack is full");
-            return;
+            bottom = bottom.next;
+            bottom.prev = null;
         }
 
         base.Push(data);
+
+        if (bottom == null)
+            bottom = peek;
+
+        Console.Write($"push count: {count} / ");
+    }
+
+    public override T Pop()
+    {
+        var data = base.Pop();
+        
+        if (count == 0)
+            bottom = null;
+
+        Console.Write($"pop count: {count} / ");
+
+        return data;
     }
 }

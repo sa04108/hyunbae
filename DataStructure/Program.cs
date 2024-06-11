@@ -18,12 +18,14 @@
         
         // int[] nums = { 8, 15, 3, 1, 4, 7, 12, 9, 13 };
         // int[] nums = { 1, 1, 1, 1, 1, 1, 1, 1, 1 };
-        int[] nums = { 13, 212, 14, 7141, 10987, 6, 15};
-        nums.RadixSort();
-        nums.Print();
+        // int[] nums = { 13, 212, 14, 7141, 10987, 6, 15};
+        // nums.RadixSort();
+        // nums.Print();
+
+        int[] nums = Enumerable.Range(1, 100).ToArray();
 
         int i = 0;
-        UndoRedoHistory<int> history = new UndoRedoHistory<int>();
+        UndoRedoHistory<int> history = new UndoRedoHistory<int>(3);
         while (true)
         {
             var key = Console.ReadKey(intercept: true); // 입력받은 키를 화면에 표시하지 않음

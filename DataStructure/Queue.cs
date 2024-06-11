@@ -73,9 +73,9 @@ public class CircularQueue<T>
 // 연결리스트 기반 큐
 public class ListQueue<T>
 {
-    public Node<T> front = null;
-    public Node<T> rear = null;
-    public int count = 0;
+    protected Node<T> front;
+    protected Node<T> rear;
+    public int count { get; private set; }
 
     public bool IsQueueEmpty()
     {
@@ -120,6 +120,12 @@ public class ListQueue<T>
             rear = null;
         
         return data;
+    }
+
+    public void Clear()
+    {
+        front = null;
+        rear = null;
     }
 
     public void Print()

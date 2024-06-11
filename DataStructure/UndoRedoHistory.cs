@@ -20,14 +20,14 @@ public class UndoRedoHistory<T>
             Console.WriteLine("Undo Stack is empty");
 
             if (undoStack.count > 0)
-                return undoStack.peek.data;
+                return undoStack.Peek();
             else
                 return default;
         }
 
         T state = undoStack.Pop();
         redoStack.Push(state);
-        return undoStack.peek.data;
+        return undoStack.Peek();
     }
 
     // Ctrl + Y
@@ -38,7 +38,7 @@ public class UndoRedoHistory<T>
             Console.WriteLine("Redo Stack is empty");
 
             if (undoStack.count > 0)
-                return undoStack.peek.data;
+                return undoStack.Peek();
             else
                 return default;
         }
