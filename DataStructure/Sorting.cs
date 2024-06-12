@@ -120,7 +120,7 @@ public static class Sort
 
         void Divide(int left, int right)
         {
-            if (left <= right)
+            if (left < right)
             {
                 int pivot = Partition(left, right);
                 Divide(left, pivot - 1);
