@@ -115,4 +115,26 @@ public class Calculator
     {
         return EvalRPNExp(ConvToRPNExp(exp));
     }
+
+    // 중위 표기식을 받아 트리로 구성
+    public BTreeNode<char> MakeExpTree(string exp)
+    {
+        exp = ConvToRPNExp(exp);
+        var stack = new Stack<BTreeNode<char>>();
+
+        foreach (var c in exp)
+        {
+            var node = new BTreeNode<char>(c);
+
+            if (!IsDigit(c))
+            {
+                node.MakeRight(stack.Pop());
+                node.MakeLeft(stack.Pop());
+            }
+
+            stack.Push(node);
+        }
+
+        return stack.Pop();
+    }
 }

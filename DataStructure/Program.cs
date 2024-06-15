@@ -2,6 +2,7 @@
 {
     public static void Main(string[] args)
     {
+        #region Legacy
         // var queue = new ListQueue<int>();
         // queue.Enqueue(1);
         // Console.WriteLine("Dequeue: {0}", queue.Dequeue());
@@ -22,31 +23,30 @@
         // nums.RadixSort();
         // nums.Print();
 
-        int[] nums = Enumerable.Range(1, 100).ToArray();
+        // int[] nums = Enumerable.Range(1, 100).ToArray();
+        // var history = new UndoRedoHistory<int>();
+        // history.Run(nums);
+        #endregion
 
-        int i = 0;
-        UndoRedoHistory<int> history = new UndoRedoHistory<int>();
-        while (true)
-        {
-            var key = Console.ReadKey(intercept: true); // 입력받은 키를 화면에 표시하지 않음
-            char keyChar = key.KeyChar;
+        // var node1 = new BTreeNode<int>(1);
+        // var node2 = new BTreeNode<int>(2);
+        // var node3 = new BTreeNode<int>(3);
+        // var node4 = new BTreeNode<int>(4);
+        // var node5 = new BTreeNode<int>(5);
+        // var node6 = new BTreeNode<int>(6);
 
-            if (keyChar == 'a')
-            {
-                Console.WriteLine($"{history.Undo()}");
-            }
-            else if (keyChar == 's')
-            {
-                if (i < nums.Length)
-                {
-                    history.AddState(nums[i]);
-                    Console.WriteLine($"{nums[i++]}");
-                }
-            }
-            else if (keyChar == 'd')
-            {
-                Console.WriteLine($"{history.Redo()}");
-            }
-        }
+        // node1.MakeLeft(node2);
+        // node1.MakeRight(node3);
+        // node2.MakeLeft(node4);
+        // node2.MakeRight(node5);
+        // node3.MakeLeft(node6);
+        
+        // node1.PostorderTraverse((data) => {
+        //     Console.Write($"{data}, ");
+        // });
+
+        var calculator = new Calculator();
+        var expRoot = calculator.MakeExpTree("1+2*7");
+        expRoot.PostorderTraverse(Console.Write);
     }
 }
