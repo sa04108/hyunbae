@@ -116,25 +116,47 @@ public class Calculator
         return EvalRPNExp(ConvToRPNExp(exp));
     }
 
-    // 중위 표기식을 받아 트리로 구성
-    public BTreeNode<char> MakeExpTree(string exp)
+    // 후위 표기식을 받아 트리로 구성
+    public BTreeNode<char> MakeExpTree(string postfixExp)
     {
-        exp = ConvToRPNExp(exp);
         var stack = new Stack<BTreeNode<char>>();
 
-        foreach (var c in exp)
+        foreach (var c in postfixExp)
         {
             var node = new BTreeNode<char>(c);
 
             if (!IsDigit(c))
             {
-                node.MakeRight(stack.Pop());
-                node.MakeLeft(stack.Pop());
+                node.right = stack.Pop();
+                node.left = stack.Pop();
             }
 
             stack.Push(node);
         }
 
         return stack.Pop();
+    }
+
+    public int EvalExpTree(BTreeNode<char> parent)
+    {
+        if (parent.left == null || parent.right == null)
+            return parent.data - '0'; // 좌, 우에 하위 노드가 없는 경우 parent는 반드시 피연산자
+
+        int op1 = EvalExpTree(parent.left);
+        int op2 = EvalExpTree(parent.right);
+
+        switch (parent.data)
+        {
+            case '+':
+                return op1 + op2;
+            case '-':
+                return op1 - op2;
+            case '*':
+                return op1 * op2;
+            case '/':
+                return op1 / op2;
+            default:
+                return parent.data - '0';
+        }
     }
 }

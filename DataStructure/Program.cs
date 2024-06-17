@@ -2,7 +2,7 @@
 {
     public static void Main(string[] args)
     {
-        #region Legacy
+        #region Sort
         // var queue = new ListQueue<int>();
         // queue.Enqueue(1);
         // Console.WriteLine("Dequeue: {0}", queue.Dequeue());
@@ -28,6 +28,7 @@
         // history.Run(nums);
         #endregion
 
+        #region BTree
         // var node1 = new BTreeNode<int>(1);
         // var node2 = new BTreeNode<int>(2);
         // var node3 = new BTreeNode<int>(3);
@@ -45,8 +46,23 @@
         //     Console.Write($"{data}, ");
         // });
 
-        var calculator = new Calculator();
-        var expRoot = calculator.MakeExpTree("1+2*7");
-        expRoot.PostorderTraverse(Console.Write);
+        // var calculator = new Calculator();
+        // var expRoot = calculator.MakeExpTree("12+7*");
+        // Console.WriteLine(calculator.EvalExpTree(expRoot));
+        #endregion
+
+        var root = new BSTNode(10);
+        root.BSTInsert(1);
+        root.BSTInsert(5);
+        root.BSTInsert(4);
+        root.BSTInsert(13);
+        root.BSTInsert(17);
+        root.BSTInsert(12);
+
+        root.BSTRemove(10);
+        root.PreorderTraverse((data) =>
+        {
+            Console.Write($"{data}, ");
+        });
     }
 }
