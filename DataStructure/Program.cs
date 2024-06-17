@@ -52,14 +52,16 @@
         #endregion
 
         var root = new BSTNode(10);
-        root.BSTInsert(1);
-        root.BSTInsert(5);
-        root.BSTInsert(4);
-        root.BSTInsert(13);
-        root.BSTInsert(17);
-        root.BSTInsert(12);
+        root.BSTInsert(1, ref root);
+        root.BSTInsert(5, ref root);
+        root.BSTInsert(4, ref root);
+        root.BSTInsert(3, ref root);
+        root.BSTInsert(13, ref root);
+        root.BSTInsert(17, ref root);
+        root.BSTInsert(12, ref root);
 
-        root.BSTRemove(10);
+        root.BSTRemove(10, ref root);
+        
         root.PreorderTraverse((data) =>
         {
             Console.Write($"{data}, ");

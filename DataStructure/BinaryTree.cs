@@ -54,7 +54,7 @@ public partial class BSTNode
         this.data = data;
     }
 
-    public void BSTInsert(int data)
+    public void BSTInsert(int data, ref BSTNode newRoot)
     {
         var pNode = this;
         var cNode = this;
@@ -80,9 +80,11 @@ public partial class BSTNode
             else
                 pNode.right = newNode;
         }
+
+        newRoot = Rebalance();
     }
 
-    public int BSTRemove(int data)
+    public int BSTRemove(int data, ref BSTNode newRoot)
     {
         // 삭제 대상 노드가 루트 노드인 경우를 감안하여 아래 탐색을 일반화할 수단으로 루트의 부모 노드 생성
         var pNode = new BSTNode(0);
@@ -111,7 +113,7 @@ public partial class BSTNode
         if (cNode.left == null && cNode.right == null)
         {
             // 부모 노드와 연결 해제
-            if (pNode.left.data == rData)
+            if (pNode.left == cNode)
                 pNode.left = null;
             else
                 pNode.right = null;
@@ -127,7 +129,7 @@ public partial class BSTNode
             else
                 dcNode = cNode.right;
 
-            if (pNode.left.data == rData)
+            if (pNode.left == cNode)
                 pNode.left = dcNode;
             else
                 pNode.right = dcNode;
@@ -158,6 +160,7 @@ public partial class BSTNode
                 mPNode.right = mNode.right;
         }
 
+        newRoot = Rebalance();
         return rData;
     }
 
