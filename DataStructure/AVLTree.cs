@@ -84,7 +84,7 @@ public partial class BSTNode
         // 균형 인수가 -2 이하이면 RR 또는 RL 상태이다.
         if (hDiff < -1)
         {
-            if (GetHeightDiff(left) < 0)
+            if (GetHeightDiff(right) < 0)
                 return RotateRR(this);
             else
                 return RotateRL(this);
